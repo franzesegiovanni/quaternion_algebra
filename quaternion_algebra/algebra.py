@@ -1,4 +1,24 @@
 import numpy as np
+import quaternion
+
+def to_euler_angles(q):
+
+    # Roll (x-axis rotation)
+    sinr_cosp = 2 * (q.w * q.x + q.y * q.z)
+    cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y)
+    roll = np.arctan2(sinr_cosp, cosr_cosp)
+
+    # Pitch (y-axis rotation)
+    sinp = np.sqrt(1 + 2 * (q.w * q.y - q.x * q.z))
+    cosp = np.sqrt(1 - 2 * (q.w * q.y - q.x * q.z))
+    pitch = 2 * np.arctan2(sinp, cosp) - np.pi / 2
+
+    # Yaw (z-axis rotation)
+    siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+    cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+    yaw = np.arctan2(siny_cosp, cosy_cosp)
+
+    return np.array([roll, pitch, yaw])
 
 def inner(q1, q2):
     result = q1.x*q2.x + q1.y*q2.y + q1.z*q2.z + q1.w*q2.w
@@ -47,7 +67,7 @@ def quaternion_product(q1, q2):
     b = q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y
     c = q1.w*q2.y - q1.x*q2.z + q1.y*q2.w + q1.z*q2.x
     d = q1.w*q2.z + q1.x*q2.y - q1.y*q2.x + q1.z*q2.w
-    qout = np.copy(q1)
+    qout = np.quaternion(0, 0, 0, 0)
     qout.w = a
     qout.x = b
     qout.y = c
@@ -70,7 +90,7 @@ def quaternion_divide(q1, q2):
     b = (-q1.w*q2.x + q1.x*q2.w - q1.y*q2.z + q1.z*q2.y) / q2norm
     c = (-q1.w*q2.y + q1.x*q2.z + q1.y*q2.w - q1.z*q2.x) / q2norm
     d = (-q1.w*q2.z - q1.x*q2.y + q1.y*q2.x + q1.z*q2.w) / q2norm
-    qout = np.copy(q1)
+    qout = np.quaternion(0, 0, 0, 0)
     qout.w = a
     qout.x = b
     qout.y = c
