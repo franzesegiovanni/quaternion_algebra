@@ -1,6 +1,23 @@
 import numpy as np
 import quaternion
 
+
+def from_euler_angles(roll, pitch, yaw):
+    cr = np.cos(roll * 0.5)
+    sr = np.sin(roll * 0.5)
+    cp = np.cos(pitch * 0.5)
+    sp = np.sin(pitch * 0.5)
+    cy = np.cos(yaw * 0.5)
+    sy = np.sin(yaw * 0.5)
+
+    q = np.quaternion(0, 0, 0, 0)
+    q.w = cr * cp * cy + sr * sp * sy
+    q.x = sr * cp * cy - cr * sp * sy
+    q.y = cr * sp * cy + sr * cp * sy
+    q.z = cr * cp * sy - sr * sp * cy
+
+    return q
+
 def to_euler_angles(q):
 
     # Roll (x-axis rotation)
